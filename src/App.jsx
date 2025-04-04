@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import "./App.css";
+import { useState, useEffect } from 'react'; // Import useState and useEffect
 function App() {
-  const [count, setCount] = useState(0)
+  const [imageUrl, setImageUrl] = useState(''); // State to store the image URL
+  const api_key =
+    "";
+  const url = `https://api.thecatapi.com/v1/images/search?limit=3`;
+
+  useEffect(() => {
+    
+    fetch(url, { headers: { "x-api-key": api_key } }) 
+    .then((response) => {
+    
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data); // Now you have the actual JSON data
+      setImageUrl(data)
+      // You can now store this data in a state variable and use it to render your UI
+    })
+    .catch((error) => {
+      console.error("Could not fetch the breeds:", error);
+    });
+
+  }, [])
+
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
       <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="flex gap-4">
+        {imageUrl ? <img src={imageUrl[0].url} className="w-2xs" alt="Random Cat" /> : <p>Loading cat image...</p>}
+        {imageUrl ? <img src={imageUrl[1].url} className="w-2xs" alt="Random Cat" /> : <p>Loading cat image...</p>}
+        {imageUrl ? <img src={imageUrl[2].url} className="w-2xs" alt="Random Cat" /> : <p>Loading cat image...</p>}
       </div>
-      <p className="read-the-docs bg-red-500">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      {/* You can eventually display the fetched data here */}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
