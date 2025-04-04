@@ -27,7 +27,7 @@ function App() {
 
   return (
     <>
-      <h1>Vite</h1>
+      <h1>Memory Game</h1>
       <div className="flex gap-4">
         {imageUrl ? <img src={imageUrl[0].url} className="w-2xs" alt="Random Cat" /> : <p>Loading cat image...</p>}
         {imageUrl ? <img src={imageUrl[1].url} className="w-2xs" alt="Random Cat" /> : <p>Loading cat image...</p>}
