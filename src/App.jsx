@@ -10,7 +10,7 @@ function App() {
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col items-center justify-center w-fit">
         <h1 className="mb-10">Memory Game</h1>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex justify-center gap-2">
           <ImageContainer imageUrl={imageUrl} imageId={imageId} />
         </div>
       </div>
