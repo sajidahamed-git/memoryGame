@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-            const ImageButton = ({ src }) => {
+const ImageButton = ({ src }) => {
   return (
     <button onClick={() => console.log(src)}>
       <img
@@ -12,4 +12,4 @@ import React from 'react'
   );
 };
 
-export default ImageButton
+export default ImageButton;
