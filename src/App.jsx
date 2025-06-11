@@ -1,6 +1,10 @@
 import ImageContainer from "./Components/ImageContainer";
 import useFetchImages from "./hooks/useFetchImages";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+
+import clsx from "clsx";
+
+import usePreloadImages from "./hooks/usePreloadimages";
 
 // import testData from "./testingdata/test.json";
 
@@ -15,22 +19,24 @@ function App() {
   const { imageUrl, imageId } = useFetchImages(apiKey, limit);
 
   // Preload images as soon as they are fetched
-  useEffect(() => {
-    if (!imageUrl || imageUrl.length === 0) return;
-    let loaded = 0;
-    imageUrl.forEach((url) => {
-      const img = new window.Image();
-      img.onload = () => {
-        loaded++;
-        if (loaded === imageUrl.length) setImagesLoaded(true);
-      };
-      img.onerror = () => {
-        loaded++;
-        if (loaded === imageUrl.length) setImagesLoaded(true);
-      };
-      img.src = url;
-    });
-  }, [imageUrl]);
+  usePreloadImages(imageUrl, setImagesLoaded);
+
+  // useEffect(() => {
+  //   if (!imageUrl || imageUrl.length === 0) return;
+  //   let loaded = 0;
+  //   imageUrl.forEach((url) => {
+  //     const img = new window.Image();
+  //     img.onload = () => {
+  //       loaded++;
+  //       if (loaded === imageUrl.length) setImagesLoaded(true);
+  //     };
+  //     img.onerror = () => {
+  //       loaded++;
+  //       if (loaded === imageUrl.length) setImagesLoaded(true);
+  //     };
+  //     img.src = url;
+  //   });
+  // }, [imageUrl]);
 
   if (!isGameStarted) {
     // Show loading indicator if images are not ready yet
@@ -49,15 +55,26 @@ function App() {
           <div className="">Choose the difficult level</div>
           <div className="flex gap-4 mt-2">
             <button
-              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className={clsx(
+                //button should be blue if imagesloaded is false and green if true
+                "mt-4 py-2 px-6 rounded transition-colors duration-300 text-white",
+                imagesLoaded
+                  ? "bg-green-500 hover:bg-green-600 "
+                  : "bg-blue-500 hover:bg-blue-600"
+              )}
               onClick={() => setIsGameStarted(true) || setRenderCount(3)}
             >
               Easy
             </button>
             <button
-              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              onClick={() => imagesLoaded && (setIsGameStarted(true), setRenderCount(5))}
-              disabled={!imagesLoaded}
+              className={clsx(
+                //button should be blue if imagesloaded is false and green if true
+                "mt-4 py-2 px-6 rounded transition-colors duration-300 text-white",
+                imagesLoaded
+                  ? "bg-green-500 hover:bg-green-600 "
+                  : "bg-blue-500 hover:bg-blue-600"
+              )}
+              onClick={() => setIsGameStarted(true) || setRenderCount(3)}
             >
               Hard
             </button>
