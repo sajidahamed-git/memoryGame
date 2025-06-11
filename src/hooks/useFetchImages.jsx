@@ -18,7 +18,7 @@ function useFetchImages(apiKey, limit) {
         const filtered = data.filter(
           (image) => image.width >= 300 && image.height >= 300
         );
-        console.log(filtered);
+        // console.log(filtered);
         setImageUrl(filtered.map((image) => image.url));
         setImageId(filtered.map((image) => image.id));
       } catch (error) {
