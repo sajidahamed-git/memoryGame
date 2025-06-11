@@ -48,6 +48,7 @@ function App() {
         allImageUrl={imageUrl}
         allImageId={imageId}
         renderCount={renderCount}
+        setIsGameStarted={setIsGameStarted}
       />
       <GithubLink />
     </div>

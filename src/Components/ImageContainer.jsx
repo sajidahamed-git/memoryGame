@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ImageButton from "./ImageButton";
 import Swal from "sweetalert2";
 
-export default function ImageContainer({ allImageUrl, allImageId,renderCount }) {
+export default function ImageContainer({ allImageUrl, allImageId,renderCount,setIsGameStarted }) {
 
   const [clickedImages, setClickedImages] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
@@ -53,6 +53,12 @@ export default function ImageContainer({ allImageUrl, allImageId,renderCount }) 
         icon: "error",
         title: "You lose!",
         text: "You have already clicked this image!",
+      }).then(() => {
+        // Reset the game by clearing clicked images and resetting start index
+        setClickedImages([]);
+        setStartIndex(0);
+        setIsGameStarted(false); // Reset the game state
+
       });
     }
     setClickedImages((prev) => [...prev, { id, url }]);

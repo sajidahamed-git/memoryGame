@@ -16,6 +16,9 @@ export default function StartScreen({
         <br />
         Click the button below to start the game and choose the difficulty
         level.
+        <br />
+        you can wait for the buttons to turn green if you want to play after the
+        images are loaded.
       </div>
       <div className="w-full flex flex-col items-center mt-4">
         <div className="">Choose the difficult level</div>
