@@ -2,11 +2,11 @@ import React, { useState ,useEffect} from "react";
 import ImageButton from "./ImageButton";
 import Swal from "sweetalert2";
 
-export default function ImageContainer({ allImageUrl, allImageId }) {
+export default function ImageContainer({ allImageUrl, allImageId,renderCount }) {
 
   const [clickedImages, setClickedImages] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-  const renderCount = 5; // Number of images to render at a time
+    // Number of images to render at a time
 
   //initial images to display when none are clicked
   const initialImageId = allImageId.slice(startIndex, startIndex + renderCount);
@@ -63,9 +63,9 @@ export default function ImageContainer({ allImageUrl, allImageId }) {
     }
   };
 
-  useEffect(() => {
-    console.log(clickedImages);
-  }, [clickedImages]);
+  // useEffect(() => {
+  //   console.log(clickedImages);
+  // }, [clickedImages]);
 
   return (
     <div className="flex gap-2 justify-center h-[300px] w-full">
