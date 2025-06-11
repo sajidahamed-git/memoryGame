@@ -1,26 +1,39 @@
 import ImageContainer from "./Components/ImageContainer";
 import useFetchImages from "./hooks/useFetchImages";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // import testData from "./testingdata/test.json";
 
 function App() {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [renderCount, setRenderCount] = useState(null);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   const apiKey =
     "live_iSkbja9U8JTdP2QwSPDcodkad8ieGzRbCcXuhnwJNByS3PGWwESiMy91WYE4dU2U";
-  const limit = 50;
-
-  // const renderCount = 5; // Number of images to render at a time
-
-  // Use test data from test.json
-  // const imageUrl = testData.imageUrl;
-  // const imageId = testData.imageID;
-
+  const limit = 51;
   const { imageUrl, imageId } = useFetchImages(apiKey, limit);
 
+  // Preload images as soon as they are fetched
+  useEffect(() => {
+    if (!imageUrl || imageUrl.length === 0) return;
+    let loaded = 0;
+    imageUrl.forEach((url) => {
+      const img = new window.Image();
+      img.onload = () => {
+        loaded++;
+        if (loaded === imageUrl.length) setImagesLoaded(true);
+      };
+      img.onerror = () => {
+        loaded++;
+        if (loaded === imageUrl.length) setImagesLoaded(true);
+      };
+      img.src = url;
+    });
+  }, [imageUrl]);
+
   if (!isGameStarted) {
+    // Show loading indicator if images are not ready yet
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-r from-[#f8cdda] to-[#1d2b64]">
         <h1 className="w-full text-center">Memory Game</h1>
@@ -43,7 +56,8 @@ function App() {
             </button>
             <button
               className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              onClick={() => setIsGameStarted(true) || setRenderCount(5)}
+              onClick={() => imagesLoaded && (setIsGameStarted(true), setRenderCount(5))}
+              disabled={!imagesLoaded}
             >
               Hard
             </button>
