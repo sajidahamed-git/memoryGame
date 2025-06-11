@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ImageContainer from "./Components/ImageContainer";
 import Loading from "./Components/loading";
 import StartSCreen from "./Components/StartScreen";
+import GithubLink from "./Components/GithubLink";
 
 import useFetchImages from "./hooks/useFetchImages";
 import usePreloadImages from "./hooks/usePreloadimages";
@@ -25,11 +26,14 @@ function App() {
 
   if (!isGameStarted) {
     return (
-      <StartSCreen
-        setIsGameStarted={setIsGameStarted}
-        setRenderCount={setRenderCount}
-        imagesLoaded={imagesLoaded}
-      />
+      <>
+        <StartSCreen
+          setIsGameStarted={setIsGameStarted}
+          setRenderCount={setRenderCount}
+          imagesLoaded={imagesLoaded}
+        />
+        <GithubLink />
+      </>
     );
   }
 
@@ -45,6 +49,7 @@ function App() {
         allImageId={imageId}
         renderCount={renderCount}
       />
+      <GithubLink />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import GithubLink from "./GithubLink";
 
 export default function StartScreen({
     setIsGameStarted,
@@ -45,6 +46,7 @@ export default function StartScreen({
           </button>
         </div>
       </div>
+      <GithubLink />
     </div>
   );
 }
