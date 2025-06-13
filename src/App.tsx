@@ -22,13 +22,14 @@ function App() {
 
   const apiKey =
     "live_iSkbja9U8JTdP2QwSPDcodkad8ieGzRbCcXuhnwJNByS3PGWwESiMy91WYE4dU2U";
-  const limit = 50;
-  const fetchedImages = useFetchImages(apiKey, limit);
-  console.log("Fetched Images:", fetchedImages);
+
+    //useFetchImages(apiKey, no.ofimaged to fetch, batches) fetches 50 images and returns an array of 6 images
+  const fetchedImages = useFetchImages(apiKey, 50, 6);
+  // console.log("Fetched Images:", fetchedImages);
   
 
   // Preload images as soon as they are fetched
-  const {loadedImages} =  usePreloadImages(fetchedImages,setIsImagesLoaded, 5)
+  const {loadedImages} =  usePreloadImages(fetchedImages,setIsImagesLoaded, 3)
 
   if (!isGameStarted) {
     return (
