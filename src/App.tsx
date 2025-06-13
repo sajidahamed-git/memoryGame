@@ -9,20 +9,26 @@ import GithubLink from "./Components/GithubLink";
 import useFetchImages from "./hooks/useFetchImages";
 import usePreloadImages from "./hooks/usePreloadimages";
 
+// import type { LoadedImagesArray } from "./types/types";
+
 // import testData from "./testingdata/test.json";
 
 function App() {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [renderCount, setRenderCount] = useState(null);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [isImagesLoaded, setIsImagesLoaded] = useState(false);
+
+  // const [loadedImages, setLoadedImages] = useState<LoadedImagesArray>([]);
 
   const apiKey =
     "live_iSkbja9U8JTdP2QwSPDcodkad8ieGzRbCcXuhnwJNByS3PGWwESiMy91WYE4dU2U";
-  const limit = 51;
-  const { imageUrl, imageId } = useFetchImages(apiKey, limit);
+  const limit = 50;
+  const fetchedImages = useFetchImages(apiKey, limit);
+  console.log("Fetched Images:", fetchedImages);
+  
 
   // Preload images as soon as they are fetched
-  usePreloadImages(imageUrl, setImagesLoaded);
+  const {loadedImages} =  usePreloadImages(fetchedImages,setIsImagesLoaded, 5)
 
   if (!isGameStarted) {
     return (
@@ -30,14 +36,14 @@ function App() {
         <StartSCreen
           setIsGameStarted={setIsGameStarted}
           setRenderCount={setRenderCount}
-          imagesLoaded={imagesLoaded}
+          imagesLoaded={isImagesLoaded}
         />
         <GithubLink />
       </>
     );
   }
 
-  if (!imagesLoaded) {
+  if (!isImagesLoaded) {
     return <Loading />;
   }
 
@@ -45,10 +51,10 @@ function App() {
     <div className="flex flex-col gap-15 justify-center h-screen bg-gradient-to-r from-[#f8cdda] to-[#1d2b64]">
       <h1 className="w-full text-center">Memory Game</h1>
       <ImageContainer
-        allImageUrl={imageUrl}
-        allImageId={imageId}
-        renderCount={renderCount}
+        loadedImages={loadedImages}
         setIsGameStarted={setIsGameStarted}
+
+
       />
       <GithubLink />
     </div>

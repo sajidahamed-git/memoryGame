@@ -1,77 +1,43 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
+import { useState } from "react";
 import ImageButton from "./ImageButton";
 import Swal from "sweetalert2";
 
-export default function ImageContainer({ allImageUrl, allImageId,renderCount,setIsGameStarted }) {
-
+export default function ImageContainer({ loadedImages, renderCount = 3, setIsGameStarted }) {
   const [clickedImages, setClickedImages] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-    // Number of images to render at a time
 
-  //initial images to display when none are clicked
-  const initialImageId = allImageId.slice(startIndex, startIndex + renderCount);
-  const initialImageUrl = allImageUrl.slice(
-    startIndex,
-    startIndex + renderCount
-  );
-
-  const initialImages = initialImageId.map((id, index) => ({
-    id,
-    url: initialImageUrl[index],
-  }));
-  // console.log(initialImages);
-
-  // Add previously clicked images to the current set (if not already present)
-  //since we are displaying 3 images only one should be a clicked image
-  // Pick a random clicked image object (if any)
-  const randomClickedImageObj =
-    clickedImages.length > 0
-      ? clickedImages[Math.floor(Math.random() * clickedImages.length)]
-      : null;
-
-  let displayImages = [];
-  if (!randomClickedImageObj) {
-    displayImages = initialImages;
-  } else {
-    // If the random clicked image is already in initialImages, just use initialImages
-    if (initialImages.some((img) => img.id === randomClickedImageObj.id)) {
-      displayImages = initialImages;
-    } else {
-      // Replace a random index in initialImages with the clicked image
-      const replaceIdx = Math.floor(Math.random() * initialImages.length);
-      displayImages = [...initialImages];
-      displayImages[replaceIdx] = randomClickedImageObj;
-    }
-  }
+  // Only show as many images as are loaded and available
+  const availableCount = Math.min(renderCount, loadedImages.length - startIndex);
+  const displayImages = loadedImages.slice(startIndex, startIndex + availableCount);
 
   const handleImageClick = (url, id) => {
-    // Check if the image has already been clicked
     if (clickedImages.some((img) => img.id === id)) {
-      console.log("Image already clicked: you lose", id);
-
       Swal.fire({
         icon: "error",
         title: "You lose!",
         text: "You have already clicked this image!",
       }).then(() => {
-        // Reset the game by clearing clicked images and resetting start index
         setClickedImages([]);
         setStartIndex(0);
-        setIsGameStarted(false); // Reset the game state
-
+        if (setIsGameStarted) setIsGameStarted(false);
       });
+      return;
     }
     setClickedImages((prev) => [...prev, { id, url }]);
-
-    // Move to next 3 images if available
-    if (startIndex + renderCount < allImageUrl.length) {
+    // Move to next batch if available
+    if (startIndex + renderCount < loadedImages.length) {
       setStartIndex(startIndex + renderCount);
     }
   };
 
-  // useEffect(() => {
-  //   console.log(clickedImages);
-  // }, [clickedImages]);
+  if (displayImages.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-[300px] w-full text-amber-900">
+        Loading images...
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-2 justify-center h-[300px] w-full">
