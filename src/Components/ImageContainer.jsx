@@ -7,10 +7,6 @@ export default function ImageContainer({ loadedImages, renderCount = 3, setIsGam
   const [clickedImages, setClickedImages] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
 
-  // Only show as many images as are loaded and available
-  const availableCount = Math.min(renderCount, loadedImages.length - startIndex);
-  const displayImages = loadedImages.slice(startIndex, startIndex + availableCount);
-
   const handleImageClick = (url, id) => {
     if (clickedImages.some((img) => img.id === id)) {
       Swal.fire({
@@ -30,6 +26,22 @@ export default function ImageContainer({ loadedImages, renderCount = 3, setIsGam
       setStartIndex(startIndex + renderCount);
     }
   };
+
+  // Only show as many images as are loaded and available
+  let displayImages = [];
+  if (clickedImages.length === 0) {
+    // First round - show initial images
+    displayImages = loadedImages.slice(0, renderCount);
+  } else {
+    // After first round - show new images plus one random clicked image
+    displayImages = loadedImages.slice(startIndex, startIndex + renderCount - 1);
+    if (displayImages.length > 0) {
+      const randomClickedImage = clickedImages[Math.floor(Math.random() * clickedImages.length)];
+      // Insert at random position
+      const randomPosition = Math.floor(Math.random() * (displayImages.length + 1));
+      displayImages.splice(randomPosition, 0, randomClickedImage);
+    }
+  }
 
   if (displayImages.length === 0) {
     return (
