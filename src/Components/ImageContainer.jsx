@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 export default function ImageContainer({ loadedImages, renderCount = 3, setIsGameStarted }) {
   const [clickedImages, setClickedImages] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
+  const [randomPosition, setRandomPosition] = useState(null);
 
   const handleImageClick = (url, id) => {
     if (clickedImages.some((img) => img.id === id)) {
@@ -16,6 +17,7 @@ export default function ImageContainer({ loadedImages, renderCount = 3, setIsGam
       }).then(() => {
         setClickedImages([]);
         setStartIndex(0);
+        setRandomPosition(null);
         if (setIsGameStarted) setIsGameStarted(false);
       });
       return;
@@ -24,6 +26,8 @@ export default function ImageContainer({ loadedImages, renderCount = 3, setIsGam
     // Move to next batch if available
     if (startIndex + renderCount < loadedImages.length) {
       setStartIndex(startIndex + renderCount);
+      // Set new random position for next set
+      setRandomPosition(Math.floor(Math.random() * renderCount));
     }
   };
 
@@ -37,8 +41,7 @@ export default function ImageContainer({ loadedImages, renderCount = 3, setIsGam
     displayImages = loadedImages.slice(startIndex, startIndex + renderCount - 1);
     if (displayImages.length > 0) {
       const randomClickedImage = clickedImages[Math.floor(Math.random() * clickedImages.length)];
-      // Insert at random position
-      const randomPosition = Math.floor(Math.random() * (displayImages.length + 1));
+      // Use the stored random position
       displayImages.splice(randomPosition, 0, randomClickedImage);
     }
   }
