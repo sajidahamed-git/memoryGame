@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import ImageContainer from "./Components/ImageContainer";
-import Loading from "./Components/loading";
+
 import StartSCreen from "./Components/StartScreen";
 import GithubLink from "./Components/GithubLink";
 
@@ -20,15 +20,15 @@ function App() {
 
 
 
-  // Fetch images only when difficulty is set
+//useFetchImages(totalNeeded,batchSize)
   const fetchedImages = useFetchImages(
-      difficulty === "hard" ? 45 : 30,
+      difficulty === "hard" ? 50 : 30,
      difficulty === "hard" ? 5 : 3);
 
   const { loadedImages } = usePreloadImages(
     fetchedImages,
     setIsImagesLoaded,
-    difficulty === "hard" ? 5 : 3
+    difficulty === "hard" ? 5 : 3 //batchSize
   );
 
   if (!isGameStarted) {
