@@ -55,12 +55,11 @@ export default function ImageContainer({
     }
 
     //if the image is not clicked, add it to the clickedImages array
-    const newRoundsPlayed = roundsPlayed + 1;
-    setroundsPlayed(newRoundsPlayed);
+    setroundsPlayed((prev) => prev + 1);
     setClickedImages((prev) => [...prev, { id, url }]);
 
     //if the rounds played is equal to the rounds, set the isGameWon state to true
-    if (newRoundsPlayed === rounds) {
+    if (roundsPlayed >= rounds) {
       setIsGameWon(true);
       return;
     }
