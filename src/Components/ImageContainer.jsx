@@ -37,6 +37,8 @@ export default function ImageContainer({
   }, [isGameWon, setIsGameStarted]);
 
   const handleImageClick = (url, id) => {
+
+    //if the image is already clicked, show an error message
     if (clickedImages.some((img) => img.id === id)) {
       Swal.fire({
         icon: "error",
@@ -52,30 +54,31 @@ export default function ImageContainer({
       return;
     }
 
+    //if the image is not clicked, add it to the clickedImages array
     const newRoundsPlayed = roundsPlayed + 1;
     setroundsPlayed(newRoundsPlayed);
     setClickedImages((prev) => [...prev, { id, url }]);
 
+    //if the rounds played is equal to the rounds, set the isGameWon state to true
     if (newRoundsPlayed === rounds) {
       setIsGameWon(true);
       return;
     }
 
-    // Move to next batch if available
+    //if the startIndex is less than the loadedImages length, set the startIndex to the startIndex plus the renderCount
     if (startIndex + renderCount < loadedImages.length) {
       setStartIndex(startIndex + renderCount);
-      // Set new random position for next set
+      //set the randomPosition to a random number between 0 and the renderCount
       setRandomPosition(Math.floor(Math.random() * renderCount));
     }
   };
 
-  // Only show as many images as are loaded and available
+  //if the clickedImages length is 0, show the initial images
   let displayImages = [];
   if (clickedImages.length === 0) {
-    // First round - show initial images
     displayImages = loadedImages.slice(0, renderCount);
   } else {
-    // After first round - show new images plus one random clicked image
+    //if the clickedImages length is not 0, show the new images plus one random clicked image
     const newImages = loadedImages.slice(startIndex, startIndex + renderCount - 1);
     if (newImages.length > 0) {
       const randomClickedImage = clickedImages[Math.floor(Math.random() * clickedImages.length)];
@@ -84,7 +87,7 @@ export default function ImageContainer({
     }
   }
 
-  // Ensure we always have renderCount number of images
+  //if the displayImages length is less than the renderCount, show the remaining images
   if (displayImages.length < renderCount) {
     const remainingCount = renderCount - displayImages.length;
     const alreadyShownImages = clickedImages.filter(
@@ -94,6 +97,7 @@ export default function ImageContainer({
     displayImages = [...displayImages, ...paddingImages];
   }
 
+  //if the displayImages length is 0, show a loading message
   if (displayImages.length === 0) {
     return (
       <div className="flex justify-center items-center h-[300px] w-full text-amber-900">
