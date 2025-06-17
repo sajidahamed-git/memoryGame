@@ -21,7 +21,9 @@ function App() {
 
 
   // Fetch images only when difficulty is set
-  const fetchedImages = useFetchImages(difficulty === "hard" ? 45 : 25, difficulty === "hard" ? 5 : 3);
+  const fetchedImages = useFetchImages(
+      difficulty === "hard" ? 45 : 30,
+     difficulty === "hard" ? 5 : 3);
 
   const { loadedImages } = usePreloadImages(
     fetchedImages,

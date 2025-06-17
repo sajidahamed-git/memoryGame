@@ -1,51 +1,37 @@
-// import React, { useState } from "react";
-
 import { useEffect, useState } from "react";
 import ImageButton from "./ImageButton";
 import Swal from "sweetalert2";
-import StartScreen from "./StartScreen";
 
 export default function ImageContainer({
   loadedImages,
   setIsGameStarted,
   difficulty,
 }) {
-  const [isGameWon, setIsGameWon] = useState(false);
-  const renderCount = difficulty === "hard" ? 5 : 3;
-  const rounds = 10;
+  console.log(loadedImages.length);
 
   const [clickedImages, setClickedImages] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-  const [randomPosition, setRandomPosition] = useState(null);
   const [roundsPlayed, setroundsPlayed] = useState(0);
 
-
-
-
+  const renderCount = difficulty === "hard" ? 5 : 3;
+  const rounds = 10;
 
   useEffect(() => {
-    console.log('main effect ran');
-    console.log(roundsPlayed);
-    
     if (roundsPlayed >= rounds) {
-      setIsGameWon(true);
       Swal.fire({
         icon: "success",
         title: "You win!",
         text: "You've completed all 10 rounds!",
-      }).then(() => {
-        setClickedImages([]);
-        setStartIndex(0);
-        setRandomPosition(null);
-        setroundsPlayed(0);
-        setIsGameWon(false);
-        if (setIsGameStarted) setIsGameStarted(false);
-      });
+      }).then(() => resetGame());
     }
-  }, [roundsPlayed, setIsGameStarted]);
+  }, [roundsPlayed]);
 
-
-
+  const resetGame = () => {
+    setClickedImages([]);
+    setStartIndex(0);
+    setroundsPlayed(0);
+    setIsGameStarted?.(false);
+  };
 
   const handleImageClick = (url, id) => {
     //if the image is already clicked, show an error message
@@ -57,7 +43,6 @@ export default function ImageContainer({
       }).then(() => {
         setClickedImages([]);
         setStartIndex(0);
-        setRandomPosition(null);
         setroundsPlayed(0);
         if (setIsGameStarted) setIsGameStarted(false);
       });
@@ -73,8 +58,6 @@ export default function ImageContainer({
     //if the startIndex is less than the loadedImages length, set the startIndex to the startIndex plus the renderCount
     if (startIndex + renderCount < loadedImages.length) {
       setStartIndex(startIndex + renderCount);
-      //set the randomPosition to a random number between 0 and the renderCount
-      setRandomPosition(Math.floor(Math.random() * renderCount));
     }
   };
 
@@ -118,29 +101,15 @@ export default function ImageContainer({
 
   return (
     <div>
-      {isGameWon ? (
-        <div className="flex flex-col justify-center items-center h-[300px] w-full">
-          <div className="text-4xl font-bold text-white mb-4 animate-bounce">
-            🎉 Congratulations! 🎉
-          </div>
-          <div className="text-2xl text-white">
-            You've completed all {rounds} rounds!
-          </div>
-          <div className="text-lg text-white mt-2">
-            <StartScreen />
-          </div>
-        </div>
-      ) : (
-        <div className="flex gap-2 justify-center h-[300px] w-full">
-          {displayImages.map((img) => (
-            <ImageButton
-              key={img.id}
-              src={img.url}
-              onClick={() => handleImageClick(img.url, img.id)}
-            />
-          ))}
-        </div>
-      )}
+      <div className="flex gap-2 justify-center h-[300px] w-full">
+        {displayImages.map((img) => (
+          <ImageButton
+            key={img.id}
+            src={img.url}
+            onClick={() => handleImageClick(img.url, img.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
