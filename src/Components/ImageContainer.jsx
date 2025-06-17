@@ -11,10 +11,16 @@ export default function ImageContainer({
   difficulty,
 }) {
   const [isGameWon, setIsGameWon] = useState(false);
+  const renderCount = difficulty === "hard" ? 5 : 3;
+  const rounds = 10;
+
+  const [clickedImages, setClickedImages] = useState([]);
+  const [startIndex, setStartIndex] = useState(0);
+  const [randomPosition, setRandomPosition] = useState(null);
+  const [roundsPlayed, setroundsPlayed] = useState(0);
 
   useEffect(() => {
     if (isGameWon) {
-      setIsGameWon(true);
       Swal.fire({
         icon: "success",
         title: "You win!",
@@ -22,19 +28,13 @@ export default function ImageContainer({
       }).then(() => {
         setClickedImages([]);
         setStartIndex(0);
+        setRandomPosition(null);
+        setroundsPlayed(0);
+        setIsGameWon(false);
+        if (setIsGameStarted) setIsGameStarted(false);
       });
-      if (setIsGameStarted) setIsGameStarted(false);
     }
   }, [isGameWon, setIsGameStarted]);
-
-  const renderCount = difficulty === "hard" ? 5 : 3;
-
-  const rounds = 10;
-
-  const [clickedImages, setClickedImages] = useState([]);
-  const [startIndex, setStartIndex] = useState(0);
-  const [randomPosition, setRandomPosition] = useState(null);
-  const [roundsPlayed, setroundsPlayed] = useState(0);
 
   const handleImageClick = (url, id) => {
     if (clickedImages.some((img) => img.id === id)) {
@@ -51,10 +51,14 @@ export default function ImageContainer({
       });
       return;
     }
+
+    const newRoundsPlayed = roundsPlayed + 1;
+    setroundsPlayed(newRoundsPlayed);
     setClickedImages((prev) => [...prev, { id, url }]);
-    setroundsPlayed(roundsPlayed + 1);
-    if (roundsPlayed === rounds) {
+
+    if (newRoundsPlayed === rounds) {
       setIsGameWon(true);
+      return;
     }
 
     // Move to next batch if available
@@ -72,14 +76,9 @@ export default function ImageContainer({
     displayImages = loadedImages.slice(0, renderCount);
   } else {
     // After first round - show new images plus one random clicked image
-    const newImages = loadedImages.slice(
-      startIndex,
-      startIndex + renderCount - 1
-    );
+    const newImages = loadedImages.slice(startIndex, startIndex + renderCount - 1);
     if (newImages.length > 0) {
-      const randomClickedImage =
-        clickedImages[Math.floor(Math.random() * clickedImages.length)];
-      // Use the stored random position
+      const randomClickedImage = clickedImages[Math.floor(Math.random() * clickedImages.length)];
       displayImages = [...newImages];
       displayImages.splice(randomPosition, 0, randomClickedImage);
     }
@@ -87,7 +86,6 @@ export default function ImageContainer({
 
   // Ensure we always have renderCount number of images
   if (displayImages.length < renderCount) {
-    // If we don't have enough images, pad with already shown images
     const remainingCount = renderCount - displayImages.length;
     const alreadyShownImages = clickedImages.filter(
       (img) => !displayImages.some((displayImg) => displayImg.id === img.id)
