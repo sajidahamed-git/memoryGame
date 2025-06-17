@@ -19,8 +19,16 @@ export default function ImageContainer({
   const [randomPosition, setRandomPosition] = useState(null);
   const [roundsPlayed, setroundsPlayed] = useState(0);
 
+
+
+
+
   useEffect(() => {
-    if (isGameWon) {
+    console.log('main effect ran');
+    console.log(roundsPlayed);
+    
+    if (roundsPlayed >= rounds) {
+      setIsGameWon(true);
       Swal.fire({
         icon: "success",
         title: "You win!",
@@ -34,10 +42,12 @@ export default function ImageContainer({
         if (setIsGameStarted) setIsGameStarted(false);
       });
     }
-  }, [isGameWon, setIsGameStarted]);
+  }, [roundsPlayed, setIsGameStarted]);
+
+
+
 
   const handleImageClick = (url, id) => {
-
     //if the image is already clicked, show an error message
     if (clickedImages.some((img) => img.id === id)) {
       Swal.fire({
@@ -55,14 +65,10 @@ export default function ImageContainer({
     }
 
     //if the image is not clicked, add it to the clickedImages array
-    setroundsPlayed((prev) => prev + 1);
     setClickedImages((prev) => [...prev, { id, url }]);
 
     //if the rounds played is equal to the rounds, set the isGameWon state to true
-    if (roundsPlayed >= rounds) {
-      setIsGameWon(true);
-      return;
-    }
+    setroundsPlayed((prev) => prev + 1);
 
     //if the startIndex is less than the loadedImages length, set the startIndex to the startIndex plus the renderCount
     if (startIndex + renderCount < loadedImages.length) {
@@ -78,11 +84,16 @@ export default function ImageContainer({
     displayImages = loadedImages.slice(0, renderCount);
   } else {
     //if the clickedImages length is not 0, show the new images plus one random clicked image
-    const newImages = loadedImages.slice(startIndex, startIndex + renderCount - 1);
+    const newImages = loadedImages.slice(
+      startIndex,
+      startIndex + renderCount - 1
+    );
     if (newImages.length > 0) {
-      const randomClickedImage = clickedImages[Math.floor(Math.random() * clickedImages.length)];
+      const randomClickedImage =
+        clickedImages[Math.floor(Math.random() * clickedImages.length)];
       displayImages = [...newImages];
-      displayImages.splice(randomPosition, 0, randomClickedImage);
+      //displayImages.splice(randomPosition, 0, randomClickedImage);
+      displayImages.push(randomClickedImage);
     }
   }
 
@@ -107,7 +118,7 @@ export default function ImageContainer({
 
   return (
     <div>
-      {isGameWon && (
+      {isGameWon ? (
         <div className="flex flex-col justify-center items-center h-[300px] w-full">
           <div className="text-4xl font-bold text-white mb-4 animate-bounce">
             🎉 Congratulations! 🎉
@@ -119,16 +130,17 @@ export default function ImageContainer({
             <StartScreen />
           </div>
         </div>
+      ) : (
+        <div className="flex gap-2 justify-center h-[300px] w-full">
+          {displayImages.map((img) => (
+            <ImageButton
+              key={img.id}
+              src={img.url}
+              onClick={() => handleImageClick(img.url, img.id)}
+            />
+          ))}
+        </div>
       )}
-      <div className="flex gap-2 justify-center h-[300px] w-full">
-        {displayImages.map((img) => (
-          <ImageButton
-            key={img.id}
-            src={img.url}
-            onClick={() => handleImageClick(img.url, img.id)}
-          />
-        ))}
-      </div>
     </div>
   );
 }
