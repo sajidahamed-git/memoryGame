@@ -6,29 +6,36 @@ import Loading from "./Components/loading";
 import StartSCreen from "./Components/StartScreen";
 import GithubLink from "./Components/GithubLink";
 
-import useFetchImages from "./hooks/useFetchImages";
+//import useFetchImages from "./hooks/useFetchImages";
 import usePreloadImages from "./hooks/usePreloadimages";
 
 // import type { LoadedImagesArray } from "./types/types";
 
-// import testData from "./testingdata/test.json";
+import { testData } from "./testingdata/test";
 
 function App() {
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [renderCount, setRenderCount] = useState(null);
   const [isImagesLoaded, setIsImagesLoaded] = useState(false);
+  const [difficulty, setDifficulty] = useState(null);
 
-  // const [loadedImages, setLoadedImages] = useState<LoadedImagesArray>([]);
 
   const apiKey =
     "live_iSkbja9U8JTdP2QwSPDcodkad8ieGzRbCcXuhnwJNByS3PGWwESiMy91WYE4dU2U";
 
-    //useFetchImages(apiKey, no.ofimaged to fetch, batches) fetches 50 images and returns an array of 6 images
-  const fetchedImages = useFetchImages(apiKey, 50, 6);
-  // console.log("Fetched Images:", fetchedImages);
-  
 
-  // Preload images as soon as they are fetched
+
+  let fetchedImages = testData;
+
+  if (difficulty === "easy") {
+    fetchedImages = testData.slice(0, 25);
+    //useFetchImages(apiKey, 25, 3);
+  } else if (difficulty === "hard") {
+    fetchedImages = testData.slice(25, 50);
+    //useFetchImages(apiKey, 50, 5);
+  }
+
+
   const {loadedImages} =  usePreloadImages(fetchedImages,setIsImagesLoaded, 3)
 
   if (!isGameStarted) {
@@ -38,6 +45,7 @@ function App() {
           setIsGameStarted={setIsGameStarted}
           setRenderCount={setRenderCount}
           imagesLoaded={isImagesLoaded}
+          setDifficulty={setDifficulty}
         />
         <GithubLink />
       </>
@@ -54,6 +62,7 @@ function App() {
       <ImageContainer
         loadedImages={loadedImages}
         setIsGameStarted={setIsGameStarted}
+        difficulty={difficulty}
 
 
       />

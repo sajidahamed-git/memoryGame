@@ -5,6 +5,7 @@ export default function StartScreen({
   setIsGameStarted,
   setRenderCount,
   imagesLoaded = false, // Default to false if not provided
+  setDifficulty,
 }) {
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-r from-[#f8cdda] to-[#1d2b64]">
@@ -43,7 +44,11 @@ export default function StartScreen({
                 ? "bg-green-500 hover:bg-green-600 "
                 : "bg-blue-500 hover:bg-blue-600"
             )}
-            onClick={() => setIsGameStarted(true) || setRenderCount(3)}
+            onClick={() => {
+              setIsGameStarted(true);
+              setRenderCount(3);
+              setDifficulty("easy");
+            }}
           >
             Easy
           </button>
@@ -55,7 +60,11 @@ export default function StartScreen({
                 ? "bg-green-500 hover:bg-green-600 "
                 : "bg-blue-500 hover:bg-blue-600"
             )}
-            onClick={() => setIsGameStarted(true) || setRenderCount(5)}
+            onClick={() => {
+              setIsGameStarted(true);
+              setRenderCount(5);
+              setDifficulty("hard");
+            }}
           >
             Hard
           </button>

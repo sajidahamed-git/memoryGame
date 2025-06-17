@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function useFetchImages(apiKey, totalNeeded = 50, batchSize = 6) {
+function useFetchImages(apiKey, totalNeeded, batchSize) {
   const [fetchedImages, setFetchedImages] = useState([]);
 
   useEffect(() => {
